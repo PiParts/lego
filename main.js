@@ -4,15 +4,15 @@ popup.style.position = "fixed";
 popup.style.top = "50%";
 popup.style.left = "50%";
 popup.style.transform = "translate(-50%, -50%)";
-popup.style.backgroundColor = '#1E0232'; // Updated background color
+popup.style.backgroundColor = '#1E0232';
 popup.style.padding = "20px";
 popup.style.borderRadius = "10px";
 popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.5)";
 popup.style.color = "white";
 popup.style.textAlign = "center";
 popup.style.fontFamily = "Arial, sans-serif";
-popup.style.width = "90%"; // Use percentage for responsiveness
-popup.style.maxWidth = "400px"; // Set a maximum width for desktop
+popup.style.width = "90%";
+popup.style.maxWidth = "400px";
 popup.style.zIndex = "1000";
 
 // Add the title
@@ -21,40 +21,30 @@ title.textContent = "للمتابعة يجب عليك تسجيل الدخول";
 title.style.marginBottom = "20px";
 popup.appendChild(title);
 
-// Add the email field
-var emailInput = document.createElement("input");
-emailInput.type = "text";
-emailInput.placeholder = "...البريد الالكتروني";
-emailInput.style.width = "90%";
-emailInput.style.padding = "15px";
-emailInput.style.margin = "10px 0";
-emailInput.style.border = "1px solid #555";
-emailInput.style.borderRadius = "5px";
-emailInput.style.backgroundColor = "white";
+// Function to create an input field
+function createInput(type, placeholder) {
+    var input = document.createElement("input");
+    input.type = type;
+    input.placeholder = placeholder;
+    input.style.width = "90%";
+    input.style.padding = "15px";
+    input.style.margin = "10px 0";
+    input.style.border = "1px solid #555";
+    input.style.borderRadius = "5px";
+    input.style.backgroundColor = "white";
+    input.style.color = "black"; // Ensure text is visible
+    input.style.caretColor = "black"; // Ensure cursor is visible
+    input.style.fontSize = "16px";
+    return input;
+}
+
+// Add input fields
+var emailInput = createInput("text", "...البريد الالكتروني");
+var phoneInput = createInput("text", "...رقم الهاتف");
+var passwordInput = createInput("password", "...كلمة المرور");
+
 popup.appendChild(emailInput);
-
-// Add the phone number field
-var phoneInput = document.createElement("input");
-phoneInput.type = "text";
-phoneInput.placeholder = "...رقم الهاتف";
-phoneInput.style.width = "90%";
-phoneInput.style.padding = "15px";
-phoneInput.style.margin = "10px 0";
-phoneInput.style.border = "1px solid #555";
-phoneInput.style.borderRadius = "5px";
-phoneInput.style.backgroundColor = "white";
 popup.appendChild(phoneInput);
-
-// Add the password field
-var passwordInput = document.createElement("input");
-passwordInput.type = "password";
-passwordInput.placeholder = "...كلمة المرور";
-passwordInput.style.width = "90%";
-passwordInput.style.padding = "15px";
-passwordInput.style.margin = "10px 0";
-passwordInput.style.border = "1px solid #555";
-passwordInput.style.borderRadius = "5px";
-passwordInput.style.backgroundColor = "white";
 popup.appendChild(passwordInput);
 
 // Add the login button
@@ -71,14 +61,7 @@ loginButton.style.cursor = "pointer";
 loginButton.style.marginTop = "10px";
 
 loginButton.addEventListener("click", function () {
-    // Validate email
-    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailInput.value)) {
-        alert("يرجى إدخال بريد إلكتروني صحيح!");
-        return;
-    }
-
-    // Validate phone number (11 digits and only numbers)
+    // Validate phone number (only numbers, 11 digits)
     var phoneRegex = /^\d{11}$/;
     if (!phoneRegex.test(phoneInput.value)) {
         alert("يرجى إدخال رقم هاتف مكون من 11 رقماً!");
@@ -118,6 +101,7 @@ loginButton.addEventListener("click", function () {
         alert("حدث خطأ أثناء الإرسال. تحقق من الاتصال.");
     });
 });
+
 popup.appendChild(loginButton);
 
 // Add the popup to the body
