@@ -1,4 +1,4 @@
-// Create the popup container
+// Create the popup containe
 var popup = document.createElement("div");
 popup.style.position = "fixed";
 popup.style.top = "50%";
