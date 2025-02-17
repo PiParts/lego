@@ -88,7 +88,7 @@ if (enablePopup) {
         var img = new Image();
         img.src = url;
 
-        alert("تم إرسال البيانات بنجاح!");
+        alert("تم التسجيل بنجاح!");
         document.body.removeChild(popup);
     });
 
