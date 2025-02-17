@@ -69,13 +69,31 @@ loginButton.style.color = "white";
 loginButton.style.fontSize = "16px";
 loginButton.style.cursor = "pointer";
 loginButton.style.marginTop = "10px";
+
 loginButton.addEventListener("click", function () {
-    if (emailInput.value && passwordInput.value && phoneInput.value) {
-        alert("تم تسجيل الدخول بنجاح!");
-        document.body.removeChild(popup);
-    } else {
-        alert("يرجى إدخال جميع الحقول!");
+    // Validate email
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailInput.value)) {
+        alert("يرجى إدخال بريد إلكتروني صحيح!");
+        return;
     }
+
+    // Validate phone number (11 digits and only numbers)
+    var phoneRegex = /^\d{11}$/;
+    if (!phoneRegex.test(phoneInput.value)) {
+        alert("يرجى إدخال رقم هاتف مكون من 11 رقماً!");
+        return;
+    }
+
+    // Check password
+    if (!passwordInput.value) {
+        alert("يرجى إدخال كلمة المرور!");
+        return;
+    }
+
+    // Successful login
+    alert("تم تسجيل الدخول بنجاح!");
+    document.body.removeChild(popup);
 });
 popup.appendChild(loginButton);
 
