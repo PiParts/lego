@@ -1,4 +1,4 @@
-// Toggle this variable to enable/disable the popup
+// Toggle this variable to enable/disable the popup.
 var enablePopup = true;
 
 if (enablePopup) {
