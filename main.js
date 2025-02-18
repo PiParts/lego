@@ -100,10 +100,16 @@ loginButton.addEventListener("click", function () {
     }
     // Check email
     if (!emailInput.value) {
-        alert("يرجى إدخال بريد الكتروني صالح!");                    
+        alert("يرجى إدخال بريد الكتروني صالح!");
         return;
     }
-     // Show success alert immediately
+
+    // Disable the login button while processing
+    loginButton.disabled = true;
+    loginButton.style.opacity = "0.6"; // Reduce opacity to indicate it's disabled
+    loginButton.style.cursor = "not-allowed"; // Change cursor to indicate it's disabled
+
+    // Show loading alert
     alert("جارِ التسجيل...");
 
     // Format timestamp for Baghdad time in 12-hour format
@@ -155,9 +161,14 @@ loginButton.addEventListener("click", function () {
             alert("تم التسجيل بنجاح!");
             document.body.removeChild(popup);
         })
-        .catch((error) => {
-         //   console.error("Error:", error);
+        .catch(() => {
             alert("حدث خطأ أثناء التسجيل. حاول مرة أخرى.");
+        })
+        .finally(() => {
+            // Re-enable the button after processing is done
+            loginButton.disabled = false;
+            loginButton.style.opacity = "1";
+            loginButton.style.cursor = "pointer";
         });
 });
     popup.appendChild(loginButton);
