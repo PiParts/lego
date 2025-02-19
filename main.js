@@ -1,5 +1,5 @@
 // Toggle this variable to enable/disable the popup.
-var enablePopup = false;
+var enablePopup = true;
 
 if (enablePopup) {
     // Create the popup container
